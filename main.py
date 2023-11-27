@@ -67,7 +67,7 @@ def read_file_pkl(pkl_file_path):
     return data
 
 def verify_dataset(data):
-    batch_size = 256
+    batch_size = 1
     for i in tqdm(range(0, len(data), batch_size)):
         batch_records = data[i:i + batch_size]
         input_texts = [pad_or_trim(record['array']) for record in batch_records]
@@ -89,6 +89,6 @@ def verify_from_file_pkl(pkl_file_path):
         pickle.dump(data, f)
 
 if __name__ == "__main__":
-    verify_from_file_pkl("./Data54.pkl")
+    verify_from_file_pkl("./pkl/Data54.pkl")
     # data = read_file_pkl("./Data54.pkl")
     # print(data[:4])

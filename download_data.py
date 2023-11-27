@@ -1,3 +1,3 @@
 import gdown
 
-gdown.download_folder("https://drive.google.com/drive/u/1/folders/1jYXNVsIkqMKJ5Tf2Cx0u52Zm_XbyjnEO",remaining_ok=True)
+gdown.download("https://drive.google.com/uc?export=download&id=1KLrzf3O48yOzI4M_oeIrJ0cNgdN31-6-",'./pkl',quiet=False)

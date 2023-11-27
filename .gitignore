@@ -8,3 +8,4 @@ test_autosub
 openAI.py
 preroces.py
 preroces.py
+pkl/*.pkl
