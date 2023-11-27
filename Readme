@@ -1,0 +1,22 @@
+# Make your folder test
+mkdir <username>
+
+# copy 4 file to your folder
+cp -rf ReadMe script hello.py run_via_slurm <username>
+
+# You can read 4 file content: cat <filename>
+
+# Run script via slurm
+cd <username>
+. run_via_slurm
+
+# Show job status: squeue. If job is running ok, the status is running or not appear
+squeue
+
+# if job not running, please cancel job by command
+#scancel <list_job_id>
+#scancel 905,906,908
+
+# Read output return
+ls
+cat slurm-{job_id}.out
