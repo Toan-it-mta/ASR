@@ -1,0 +1,10 @@
+aia_asr
+data_test
+output_segment_audio
+output_segment_srt
+src
+pkls
+test_autosub
+openAI.py
+preroces.py
+preroces.py
