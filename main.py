@@ -8,11 +8,13 @@ import torch.nn.functional as F
 
 # Đặt thiết bị là GPU nếu có
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-processor = WhisperProcessor.from_pretrained("DrishtiSharma/whisper-large-v2-vietnamese")
-model = WhisperForConditionalGeneration.from_pretrained("DrishtiSharma/whisper-large-v2-vietnamese")
+processor = WhisperProcessor.from_pretrained("whisper_model")
+model = WhisperForConditionalGeneration.from_pretrained("whisper_model")
 model.to(device)  # Chuyển model sang GPU nếu có
 forced_decoder_ids = processor.get_decoder_prompt_ids(language="vi", task="transcribe")
-
+save_directory = "./whisper_model"
+processor.save_pretrained(save_directory)
+model.save_pretrained(save_directory)
 def remove_punt(str):
     punc = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
     for ele in str:
@@ -89,6 +91,7 @@ def verify_from_file_pkl(pkl_file_path):
         pickle.dump(data, f)
 
 if __name__ == "__main__":
-    verify_from_file_pkl("./pkl/Data54.pkl")
+    # verify_from_file_pkl("./pkl/Data54.pkl")
+    print('hello')
     # data = read_file_pkl("./Data54.pkl")
     # print(data[:4])
