@@ -8,13 +8,10 @@ import torch.nn.functional as F
 
 # Đặt thiết bị là GPU nếu có
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-processor = WhisperProcessor.from_pretrained("whisper_model")
-model = WhisperForConditionalGeneration.from_pretrained("whisper_model")
+processor = WhisperProcessor.from_pretrained("DrishtiSharma/whisper-large-v2-vietnamese")
+model = WhisperForConditionalGeneration.from_pretrained("DrishtiSharma/whisper-large-v2-vietnamese")
 model.to(device)  # Chuyển model sang GPU nếu có
 forced_decoder_ids = processor.get_decoder_prompt_ids(language="vi", task="transcribe")
-save_directory = "./whisper_model"
-# processor.save_pretrained(save_directory)
-# model.save_pretrained(save_directory)
 
 def remove_punt(str):
     punc = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
@@ -70,18 +67,19 @@ def read_file_pkl(pkl_file_path):
     return data
 
 def verify_dataset(data):
-    for record in tqdm(data):
-        record['api_sentence'] = ""
-        record['compare'] = False
-        try:
-            input_texts = record['array']
-            input_features = processor(input_texts, sampling_rate=16000, return_tensors="pt").input_features.to(device)
-            predicted_ids = model.generate(input_features, forced_decoder_ids=forced_decoder_ids)
-            decoded_texts = processor.batch_decode(predicted_ids, skip_special_tokens=True)
-            record['api_sentence'] = decoded_texts[0]
-            record['compare'] = compare_script(record['sentence'], decoded_texts[0])
-        except:
-            continue 
+    batch_size = 24
+    for i in tqdm(range(0, len(data), batch_size)):
+        batch_records = data[i:i + batch_size]
+        input_texts = [pad_or_trim(record['array']) for record in batch_records]
+
+        input_features = processor(input_texts, sampling_rate=16000, return_tensors="pt", padding=True, truncation=True).input_features.to(device)
+        predicted_ids = model.generate(input_features, forced_decoder_ids=forced_decoder_ids)
+        decoded_texts = processor.batch_decode(predicted_ids, skip_special_tokens=True)
+
+        for j, record in enumerate(batch_records):
+            record['api_sentence'] = decoded_texts[j]
+            record['compare'] = compare_script(record['sentence'], decoded_texts[j])
+
     return data
 
 def verify_from_file_pkl(pkl_file_path):
@@ -91,7 +89,6 @@ def verify_from_file_pkl(pkl_file_path):
         pickle.dump(data, f)
 
 if __name__ == "__main__":
-    verify_from_file_pkl("./pkl/Data54.pkl")
-    # print('hello')
+    verify_from_file_pkl("./Data1.pkl")
     # data = read_file_pkl("./Data54.pkl")
     # print(data[:4])
